@@ -28,13 +28,34 @@ public class Scanner {
     private static int REQUEST_CAMERA = 12;
     private static String LOG_TEXT = "SCANNER", state = "loading";
     private SurfaceView camera;
-    private DetectionsListener listener;
-    private boolean showToasts = true;
+    private boolean showToasts = true, scanning = false;
+    private ScannerListener listener;
 
-    public Scanner(Activity activity, SurfaceView surfaceView, DetectionsListener listener){
+    public Scanner(Activity activity){
         this.activity = activity;
+    }
+
+    public Scanner(Activity activity, SurfaceView surfaceView){
+        this.activity = activity;
+        setSurfaceView(surfaceView);
+    }
+
+    public Scanner(Activity activity, SurfaceView surfaceView, ScannerListener listener){
+        this.activity = activity;
+        setSurfaceView(surfaceView);
+        setListener(listener);
+        scan();
+    }
+
+    public void setSurfaceView(SurfaceView surfaceView){
         this.camera = surfaceView;
+    }
+
+    public void setListener(ScannerListener listener){
         this.listener = listener;
+    }
+
+    public void scan(){
         prepareScanning();
     }
 
@@ -53,13 +74,13 @@ public class Scanner {
                 state = "You have low storage";
                 if (showToasts)Toast.makeText(activity, state, Toast.LENGTH_LONG).show();
                 Log.e(LOG_TEXT,state);
-                listener.state(state);
+                listener.onStateChanged(state, 2);
                 return;
             }else{
                 state = "OCR not ready";
                 if (showToasts)Toast.makeText(activity, state, Toast.LENGTH_LONG).show();
                 Log.e(LOG_TEXT,state);
-                listener.state(state);
+                listener.onStateChanged(state, 3);
                 return;
             }
 
@@ -103,23 +124,22 @@ public class Scanner {
             public void receiveDetections(Detector.Detections<TextBlock> detections) {
 
                 state = "running";
-                listener.state(state);
+                listener.onStateChanged(state, 1);
 
                 final SparseArray<TextBlock> items = detections.getDetectedItems();
                 if (items.size() != 0) {
 
-                    StringBuilder stringBuilder = new StringBuilder();
+                    final StringBuilder stringBuilder = new StringBuilder();
                     for (int i = 0; i < items.size(); ++i) {
                         TextBlock item = items.valueAt(i);
                         stringBuilder.append(item.getValue());
                         stringBuilder.append("\n");
                     }
-
-                    String detectedNumbers = stringBuilder.toString().replaceAll("[^0-9]", "");
-                    listener.detections(stringBuilder.toString(),
-                            Long.parseLong(detectedNumbers),
-                            Integer.parseInt(detectedNumbers));
-
+                    activity.runOnUiThread(new Runnable() {
+                        public void run() {
+                            listener.onDetected(stringBuilder.toString());
+                        }
+                    });
                     Log.d(LOG_TEXT, stringBuilder.toString());
                 }
             }
@@ -134,5 +154,17 @@ public class Scanner {
     public String getState(){
         return state;
     }
+
+    public void setScanning(boolean scanning){
+        if (scanning){
+            prepareScanning();
+            scanning = true;
+        }else{
+            camera.destroyDrawingCache();
+            scanning = false;
+        }
+    }
+
+    public boolean isScanning(){return scanning;}
 
 }
