@@ -1,1 +1,1 @@
-include ':app', ':characterscanner'
+include ':scanexample', ':characterscanner'
