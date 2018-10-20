@@ -1,5 +1,10 @@
 # Text and Numbers Recognizer [![Lucem](https://camo.githubusercontent.com/cfcaf3a99103d61f387761e5fc445d9ba0203b01/68747470733a2f2f7472617669732d63692e6f72672f6477796c2f657374612e7376673f6272616e63683d6d6173746572)](https://about.me/lucem-anb) [![](https://jitpack.io/v/Lucem-Anb/android-text-scanner.svg)](https://jitpack.io/#Lucem-Anb/android-text-scanner)
-This library is an easy to implement and use for scanning text and numbers using the camera (Optical Character Recognition) on android devices
+This library is an easy to implement and use for scanning text and numbers using the camera (Optical Character Recognition) on android devices. 
+
+You can view my my app [here](https://play.google.com/store/apps/details?id=com.lucem.scancredo) where i use this library
+![Scan Credo](https://lh3.googleusercontent.com/vP7VfVVClMJRIaUGHjLzlb8XpnAQGAVjJigVCCUwGK5sYDRRWbbG_Uz3x2HYOyTk9Lg=s180-rw)
+I appreciate your download and rating of this app.
+
 
 ![Scan Sample](http://i.imgur.com/YukmNOz.png)
 
